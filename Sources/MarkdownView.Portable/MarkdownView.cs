@@ -1,20 +1,22 @@
-﻿namespace Xam.Forms.Markdown
-{
-    using System.Linq;
-    using Markdig.Syntax;
-    using Markdig.Syntax.Inlines;
-    using Xamarin.Forms;
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.IO;
-    using Extensions;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using Markdig;
+using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
+using Xam.Forms.Markdown;
+using Xam.Forms.Markdown.Extensions;
+using Xamarin.Forms;
 
+namespace Xam.Forms.MarkdownView
+{
     public class MarkdownView : ContentView
     {
         public Action<string> NavigateToLink { get; set; } = (s) => Device.OpenUri(new Uri(s));
 
-        public static MarkdownTheme Global = new LightMarkdownTheme();
+        public static MarkdownTheme Global = new DarkMarkdownTheme();
 
         public string Markdown
         {
@@ -67,11 +69,17 @@
 
             if(!string.IsNullOrEmpty(this.Markdown))
             {
-                var parsed = Markdig.Markdown.Parse(this.Markdown);
+                var parsed = this.NormalizeAndParse();
                 this.Render(parsed.AsEnumerable());
             }
 
             this.Content = stack;
+        }
+
+        private MarkdownDocument NormalizeAndParse()
+        {
+            var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+            return Markdig.Markdown.Parse(this.Markdown, pipeline);
         }
 
         private void Render(IEnumerable<Block> blocks)
@@ -426,7 +434,7 @@
 
                     var url = link.Url;
 
-                    if (!(url.StartsWith("http://") || url.StartsWith("https://")))
+                    if (!(url.StartsWith("http://") || url.StartsWith("https://") || url.StartsWith("mailto:") || url.StartsWith("tel:")))
                     {
                         url = $"{this.RelativeUrlHost?.TrimEnd('/')}/{url.TrimStart('/')}";
                     }
