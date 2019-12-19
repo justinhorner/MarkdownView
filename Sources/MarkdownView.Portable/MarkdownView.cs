@@ -9,6 +9,7 @@ using Markdig.Syntax.Inlines;
 using Xam.Forms.Markdown;
 using Xam.Forms.Markdown.Extensions;
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 
 namespace Xam.Forms.MarkdownView
 {
@@ -42,6 +43,14 @@ namespace Xam.Forms.MarkdownView
 
         public static readonly BindableProperty ThemeProperty = BindableProperty.Create(nameof(Theme), typeof(MarkdownTheme), typeof(MarkdownView), Global, propertyChanged: OnMarkdownChanged);
 
+        public Color BackgroundColorOverride
+        {
+            get { return (Color)GetValue(BackgroundColorOverrideProperty); }
+            set { SetValue(BackgroundColorOverrideProperty, value); }
+        }
+
+        public static readonly BindableProperty BackgroundColorOverrideProperty = BindableProperty.Create(nameof(BackgroundColorOverride), typeof(Color), typeof(MarkdownView), null, propertyChanged: OnMarkdownChanged);
+        
         private bool isQuoted;
 
         private List<View> queuedViews = new List<View>();
@@ -65,7 +74,10 @@ namespace Xam.Forms.MarkdownView
 
             this.Padding = this.Theme.Margin;
 
-            this.BackgroundColor = this.Theme.BackgroundColor;
+            var backgroundColor = this.BackgroundColorOverride.IsDefault
+                ? this.Theme.BackgroundColor
+                : this.BackgroundColorOverride;
+            this.BackgroundColor = backgroundColor;
 
             if(!string.IsNullOrEmpty(this.Markdown))
             {

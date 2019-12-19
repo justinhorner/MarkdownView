@@ -105,5 +105,13 @@ namespace Xam.Forms.MarkdownView.UnitTests
             var hasLinks = view.Content.LogicalChildren.Any(x => x is Label label && label.GestureRecognizers.Any());
             Assert.IsFalse(hasLinks);
         }
+
+        [Test]
+        public void test_background_color_override()
+        {
+            var view = new MarkdownView {BackgroundColorOverride = Color.Aqua};
+            view.Markdown = @"* This is a test";
+            Assert.AreEqual(Color.Aqua, view.BackgroundColor);
+        }
     }
 }
