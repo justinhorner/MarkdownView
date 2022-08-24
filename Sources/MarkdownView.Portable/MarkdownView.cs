@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Markdig;
+using Markdig.Extensions.Mathematics;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Xam.Forms.Markdown;
@@ -502,6 +503,19 @@ namespace Xam.Forms.MarkdownView
                             ForegroundColor = this.Theme.Code.ForegroundColor,
                             BackgroundColor = this.Theme.Code.BackgroundColor
                         },
+                    };
+                case MathInline mathInline:
+                    return new[]
+                    {
+                        new Span
+                        {
+                            Text = mathInline.Content.Text.Substring(mathInline.Content.Start, mathInline.Content.Length),
+                            FontAttributes = attributes,
+                            ForegroundColor = foregroundColor,
+                            BackgroundColor = backgroundColor,
+                            FontSize = size,
+                            FontFamily = family,
+                        }
                     };
 
                 default:
