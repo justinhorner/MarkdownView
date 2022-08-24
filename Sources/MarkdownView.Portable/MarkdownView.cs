@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Markdig;
+using Markdig.Extensions.Mathematics;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Xam.Forms.Markdown;
@@ -465,7 +466,7 @@ namespace Xam.Forms.MarkdownView
                         }
 
                         queuedViews.Add(image);
-                        return new Span[0];
+                        return Array.Empty<Span>();
                     }
                     else
                     {
@@ -503,10 +504,23 @@ namespace Xam.Forms.MarkdownView
                             BackgroundColor = this.Theme.Code.BackgroundColor
                         },
                     };
+                case MathInline mathInline:
+                    return new[]
+                    {
+                        new Span
+                        {
+                            Text = mathInline.Content.Text.Substring(mathInline.Content.Start, mathInline.Content.Length),
+                            FontAttributes = attributes,
+                            ForegroundColor = foregroundColor,
+                            BackgroundColor = backgroundColor,
+                            FontSize = size,
+                            FontFamily = family,
+                        }
+                    };
 
                 default:
                     Debug.WriteLine($"Can't render {inline.GetType()} inlines.");
-                    return null;
+                    return Array.Empty<Span>();
             }
         }
 
