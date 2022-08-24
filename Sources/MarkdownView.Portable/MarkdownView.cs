@@ -466,7 +466,7 @@ namespace Xam.Forms.MarkdownView
                         }
 
                         queuedViews.Add(image);
-                        return new Span[0];
+                        return Array.Empty<Span>();
                     }
                     else
                     {
@@ -520,7 +520,7 @@ namespace Xam.Forms.MarkdownView
 
                 default:
                     Debug.WriteLine($"Can't render {inline.GetType()} inlines.");
-                    return null;
+                    return Array.Empty<Span>();
             }
         }
 
